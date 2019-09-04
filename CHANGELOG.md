@@ -9,7 +9,7 @@
 
 ## v1.0.0 (2019-08-30)
 ### Added
-- Build script and [README](src/readme.txt) with instructions
+- Readme.txt with instructions
 - [CHANGELOG](CHANGELOG.md)
 
 ## 2019-07-09
