@@ -1,0 +1,19 @@
+{
+  "name": "allsecure-exchange/allsecure-exchange-opencart",
+  "description": "",
+  "type": "opencart-plugin",
+  "license": "",
+  "require": {
+    "php": ">=7.1",
+    "psr/log": "^1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "AllsecureExchange\\Client\\": "upload/system/library/allsecure-exchange/client/",
+      "AllsecureExchange\\": "upload/system/library/allsecure-exchange/plugin/"
+    }
+  },
+  "config": {
+    "vendor-dir": "upload/system/library/allsecure-exchange/"
+  }
+}
