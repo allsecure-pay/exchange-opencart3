@@ -14,14 +14,14 @@ trait AllsecureExchangeGateway
          */
         return [
             'cc' => 'Credit Card',
-            // 'visa' => 'Visa',
-            // 'mastercard' => 'MasterCard',
-            // 'amex' => 'Amex',
-            // 'diners' => 'Diners',
-            // 'jcb' => 'JCB',
-            // 'discover' => 'Discover',
-            // 'unionpay' => 'UnionPay',
-            // 'maestro' => 'Maestro',
+            'visa' => 'Visa',
+            'mastercard' => 'MasterCard',
+            'amex' => 'Amex',
+            'diners' => 'Diners',
+            'jcb' => 'JCB',
+            'discover' => 'Discover',
+            'unionpay' => 'UnionPay',
+            'maestro' => 'Maestro',
             // 'uatp' => 'UATP',
         ];
     }
