@@ -14,19 +14,30 @@ trait AllsecureExchangeGateway
          */
         return [
             'cc' => 'Credit Card',
-            'visa' => 'Visa',
-            'mastercard' => 'MasterCard',
-            'amex' => 'Amex',
-            'diners' => 'Diners',
-            'jcb' => 'JCB',
-            'discover' => 'Discover',
-            'unionpay' => 'UnionPay',
-            'maestro' => 'Maestro',
+            // 'visa' => 'Visa',
+            // 'mastercard' => 'MasterCard',
+            // 'amex' => 'Amex',
+            // 'diners' => 'Diners',
+            // 'jcb' => 'JCB',
+            // 'discover' => 'Discover',
+            // 'unionpay' => 'UnionPay',
+            // 'maestro' => 'Maestro',
             // 'uatp' => 'UATP',
         ];
     }
 
     /**
+     * @return array
+     */
+    private function getMethods()
+    {
+        return [
+            AllsecureExchangePlugin::METHOD_DEBIT,
+            AllsecureExchangePlugin::METHOD_PREAUTHORIZE,
+        ];
+    }
+
+	/**
      * @return array
      */
     private function getCreditCards()
@@ -46,6 +57,7 @@ trait AllsecureExchangeGateway
                 'api_secret' => $this->getConfig('cc_api_secret_' . $cardType),
                 'integration_key' => $this->getConfig('cc_integration_key_' . $cardType),
                 'seamless' => $this->getConfig('cc_seamless_' . $cardType),
+				'method' => $this->getConfig('cc_method_' . $cardType),
             ];
         }
         return $creditCards;

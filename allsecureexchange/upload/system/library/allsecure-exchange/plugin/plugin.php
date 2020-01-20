@@ -4,9 +4,12 @@ namespace AllsecureExchange;
 
 final class AllsecureExchangePlugin
 {
+	const METHOD_DEBIT = 'debit';
+    const METHOD_PREAUTHORIZE = 'preauthorize';
+
     public function getVersion()
     {
-        return '1.2.2';
+        return '1.3.0';
     }
 
     public function getName()
