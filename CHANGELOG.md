@@ -1,6 +1,12 @@
 # Release Notes
 
-## Unreleased
+## v1.3.1 (2020-01-20)
+
+### Fixed
+- Postback callback URL card type assignment
+
+## v1.3.0 (2020-01-14)
+
 ### Added
 - Preauthorize/Capture/Void
 ### Changed
@@ -11,6 +17,7 @@
 - Gateway client PHP 7.3 compatibility: remove redundant filter_var FILTER_VALIDATE_URL flags
 
 ## v1.2.1 (2019-09-16)
+
 ### Fixed
 - Autoload import path in module controller
 
