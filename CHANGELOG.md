@@ -1,5 +1,7 @@
 # Release Notes
 
+- added x-source-platform
+
 ## v1.3.1 (2020-01-20)
 
 ### Fixed
