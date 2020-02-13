@@ -194,14 +194,14 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
         }
 
         if ($paymentResult->hasErrors()) {
-            $this->processFailure($this->order, $paymentResult->getFirstError());
+            $this->processFailure($this->order);
         }
 
         if ($paymentResult->isSuccess()) {
             // $gatewayReferenceId = $paymentResult->getReferenceId();
             switch ($paymentResult->getReturnType()) {
                 case TransactionResult::RETURN_TYPE_ERROR:
-                    $this->processFailure($this->order, $paymentResult->getFirstError());
+                    $this->processFailure($this->order);
                     break;
                 case TransactionResult::RETURN_TYPE_REDIRECT:
                     /**
@@ -229,15 +229,12 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
         $this->processFailure($this->order);
 	}
 
-    private function processFailure($order, $errors = null)
+    private function processFailure($order)
     {
         if ($order['order_status_id'] == self::PENDING) {
             $this->model_checkout_order->addOrderHistory($order['order_id'], self::FAILED);
             $this->session->data['error'] = $this->language->get('order_error');
-			if (!empty($errors)) {
-                $this->session->data['error'] = $errors;
-            }
-            $this->response->redirect($this->url->link('checkout/checkout'));
+			$this->response->redirect($this->url->link('checkout/checkout'));
         }
     }
 
