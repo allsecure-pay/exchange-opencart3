@@ -326,12 +326,12 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
 
 		$client = $this->client($cardType);
 
-        // if (!$client->validateCallbackWithGlobals()) {
-        //     if (!headers_sent()) {
-        //         http_response_code(400);
-        //     }
-        //     die("OK");
-        // }
+        if (!$client->validateCallbackWithGlobals()) {
+            if (!headers_sent()) {
+                http_response_code(400);
+            }
+            die("OK");
+        }
 
         $callbackResult = $client->readCallback(file_get_contents('php://input'));
 
