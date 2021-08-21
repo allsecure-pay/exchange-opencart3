@@ -151,8 +151,7 @@ var allsecureExchangeSeamless = function () {
             {
                 card_holder: $seamlessCardHolderInput.val(),
                 month: $seamlessExpiryMonthInput.val(),
-                year: $seamlessExpiryYearInput.val(),
-                email: $seamlessEmailInput.val()
+                year: $seamlessExpiryYearInput.val()
             },
             function (token, cardData) {
                 success.call(this, token);

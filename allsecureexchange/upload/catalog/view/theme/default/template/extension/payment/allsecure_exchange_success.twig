@@ -1,0 +1,36 @@
+{{ header }}
+<div id="common-success" class="container">
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">{{ content_top }}
+		<h1>{{ payment_success_allsecure_exchange_heading_title }}</h1>
+		{{ text_message }}
+		<h3>{{ transaction_details }}</h3>
+		<div style="border: 1px solid #DDDDDD; margin-bottom: 20px; width: 350px;">
+			<WPDISPLAY ITEM=banner>
+		</div>
+		<ul>
+			<li>{{ transaction_type }} : {{ transactionType }}</li>
+			<li>{{ transaction_payment_method }} : {{ binBrand }} {{ firstSixDigits }} **** {{ lastFourDigits }}</li>
+			<li>{{ transaction_amount }} : {{ amount }} {{ currency }}</li>
+			<li>{{ transaction_authcode }} : {{ authCode }}</li>
+		</ul>
+		<div class="buttons">
+			<div class="pull-right">
+				<a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a>
+			</div>
+		</div>
+		{{ content_bottom }}
+	</div>
+	{{ column_right }}
+</div>
+<!-- <script type="text/javascript">
+setTimeout('location = \'{{ continue }}\';', 10000);
+</script>//-->
+{{ footer }}

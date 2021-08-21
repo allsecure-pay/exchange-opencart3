@@ -12,14 +12,14 @@ class ModelExtensionPaymentAllsecureExchangeCreditCard extends Model
         $base_url = $this->config->get('config_url');
 
         $this->load->language('extension/payment/allsecure_exchange_' . $this->type);
-        $logo = '<img src="' . $base_url . 'image/catalog/allsecure_exchange/' . $this->type . '.png" />';
+        /* $logo = '<img src="' . $base_url . 'image/catalog/allsecure_exchange/' . $this->type . '.png" />'; */
         $code = $this->session->data['language'];
         $code = substr($code, 0, 2);
-        $title = $logo . ' ' . $this->config->get($prefix . '_title')['en'];
         if (isset($code) && isset($this->config->get($prefix . '_title')[$code])) {
-            $title = $logo . ' ' . $this->config->get($prefix . '_title')[$code];
-        }
-
+            $title = $this->config->get($prefix . '_title')[$code];
+        } else {
+			$title = $this->config->get($prefix . '_title')['en']; 
+		}
         $method_data = [
             'code' => 'allsecure_exchange_' . $this->type,
             'title' => $title,

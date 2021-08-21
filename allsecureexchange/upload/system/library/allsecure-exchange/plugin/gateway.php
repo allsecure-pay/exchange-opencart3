@@ -36,6 +36,17 @@ trait AllsecureExchangeGateway
             AllsecureExchangePlugin::METHOD_PREAUTHORIZE,
         ];
     }
+	
+	/**
+     * @return array
+     */
+    private function getHosts()
+    {
+        return [
+            AllsecureExchangePlugin::HOST_TEST,
+            AllsecureExchangePlugin::HOST_LIVE,
+        ];
+    }
 
 	/**
      * @return array

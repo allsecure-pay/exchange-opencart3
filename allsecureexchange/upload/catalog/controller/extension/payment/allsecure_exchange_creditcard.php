@@ -7,6 +7,8 @@ use AllsecureExchange\Client\Data\Customer;
 use AllsecureExchange\Client\Transaction\Debit;
 use AllsecureExchange\Client\Transaction\Preauthorize;
 use AllsecureExchange\Client\Transaction\Result as TransactionResult;
+use AllsecureExchange\Client\StatusApi\StatusRequestData;
+use AllsecureExchange\Client\StatusApi\StatusResult;
 use AllsecureExchange\AllsecureExchangeGateway;
 use AllsecureExchange\AllsecureExchangePlugin;
 
@@ -155,16 +157,16 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
                     $transaction = new Debit();
                     break;
             }
-
-            $transaction->setTransactionId($this->encodeOrderId($this->session->data['order_id']))
+			$merchantTxId = $this->encodeOrderId($this->session->data['order_id']);
+            $transaction->setTransactionId($merchantTxId)
                 ->setAmount(number_format(round($this->order['total'], 2), 2, '.', ''))
                 ->setCurrency($this->order['currency_code'])
                 ->setCustomer($customer)
                 ->setExtraData($this->extraData3DS())
                 ->setCallbackUrl(str_replace('&amp;', '&', $this->url->link('extension/payment/allsecure_exchange_' . $this->type . '/callback', ['orderId' => $orderId, 'cardType' => $cardType])))
                 ->setCancelUrl(str_replace('&amp;', '&', $this->url->link('extension/payment/allsecure_exchange_' . $this->type . '/response', ['orderId' => $orderId, 'cancelled' => 1])))
-                ->setErrorUrl(str_replace('&amp;', '&', $this->url->link('extension/payment/allsecure_exchange_' . $this->type . '/response', ['orderId' => $orderId, 'failed' => 1])))
-                ->setSuccessUrl(str_replace('&amp;', '&', $this->url->link('extension/payment/allsecure_exchange_' . $this->type . '/response', ['orderId' => $orderId, 'success' => 1])));
+                ->setErrorUrl(str_replace('&amp;', '&', $this->url->link('extension/payment/allsecure_exchange_' . $this->type . '/response', ['orderId' => $orderId, 'failed' => 1, 'astrxid'=> $merchantTxId, 'cardType' => $cardType])))
+                ->setSuccessUrl(str_replace('&amp;', '&', $this->url->link('extension/payment/allsecure_exchange_' . $this->type . '/response', ['orderId' => $orderId, 'success' => 1, 'astrxid'=> $merchantTxId ,'cardType' => $cardType])));
 
             /**
              * token
@@ -250,7 +252,8 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
             $this->getConfig('cc_api_user_' . $cardType),
             htmlspecialchars_decode($this->getConfig('cc_api_password_' . $cardType)),
             $this->getConfig('cc_api_key_' . $cardType),
-            $this->getConfig('cc_api_secret_' . $cardType)
+            $this->getConfig('cc_api_secret_' . $cardType),
+			substr($this->session->data['language'], 0, 2)
         );
     }
 
@@ -280,34 +283,92 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
 
         return $orderId;
     }
-
+	
 	public function response()
     {
         $this->load->model('checkout/order');
         $this->load->language('extension/payment/allsecure_exchange');
-
+		/**
+         * order
+         */
         $orderId = isset($_REQUEST['orderId']) ? (int)$_REQUEST['orderId'] : null;
         $order = $this->model_checkout_order->getOrder($orderId);
 
         if (!$order) {
             $this->session->data['error'] = $this->language->get('order_cancelled');
-            $this->response->redirect($this->url->link('checkout/checkout'));
+            $this->response->redirect($this->url->link('checkout/checkout')); 
         }
+		
+		/**
+         * statusApi
+         */
+		$cardType = $_REQUEST['cardType'];
+		$transactionId = isset($_REQUEST['astrxid']) ? $_REQUEST['astrxid'] : null;
+		$client = $this->client($cardType);
+		$statusRequestData = new StatusRequestData();
+		$statusRequestData->setMerchantTransactionId($transactionId); 
+		$statusResult = $client->sendStatusRequest($statusRequestData);
+		$result = $statusResult -> getTransactionStatus();
 
+		/* if transaction cancelled */
         $cancelled = !empty($_REQUEST['cancelled']);
         if ($cancelled) {
-            $this->session->data['error'] = $this->language->get('order_cancelled');
+            $this->session->data['error'] = $this->language->get('order_cancelled'); // collect data eror here
 			$this->response->redirect($this->url->link('checkout/checkout'));
             return;
         }
-
+		
+		/* if transaction success */
         $success = !empty($_REQUEST['success']);
         if ($success) {
-            $this->response->redirect($this->url->link('checkout/success'));
+			if ($transactionId) {
+				/**
+				 * transaction data
+				 */
+				$data['transactionType'] = $statusResult -> getTransactionType();
+				$data['amount'] = $statusResult -> getAmount();
+				$data['currency'] = $statusResult -> getCurrency();
+				$cardData = $statusResult -> getreturnData();
+				$data['cardHolder'] = $cardData -> getcardHolder();
+				$data['binBrand'] = $cardData -> getbinBrand();
+				$data['expiryMonth'] = $cardData -> getexpiryMonth();
+				$data['expiryYear'] = $cardData -> getexpiryYear();
+				$data['firstSixDigits'] = $cardData -> getfirstSixDigits();
+				$data['lastFourDigits'] = $cardData -> getlastFourDigits();
+				$extraData = $statusResult -> getextraData(); 
+				$data['authCode'] = isset($extraData['authCode']) ? $extraData['authCode'] : null;
+			}
+							
+			$data['timestamp'] = date("Y-m-d H:i:s");			
+			$data['column_left'] = $this->load->controller('common/column_left');
+			$data['column_right'] = $this->load->controller('common/column_right');
+			$data['content_top'] = $this->load->controller('common/content_top');
+			$data['content_bottom'] = $this->load->controller('common/content_bottom');
+			$data['footer'] =  $this->load->controller('common/footer');
+			$data['header'] = $this->load->controller('common/header');
+			$data['button_back'] = $this->language->get('button_back');
+			$data['back'] = $this->url->link('common/home');
+			
+			/**
+			 * clear cart content
+			 */
+			$this->cart->clear();
+			
+			$this->response->setOutput($this->load->view('extension/payment/allsecure_exchange_success', $data)); 
             return;
         }
-
-        $this->session->data['error'] = $this->language->get('order_error');
+		
+		/* if transaction declined */
+		
+		if ($transactionId) {
+			$errors = $statusResult->getFirstError();
+			$decline = (int)$errors->getCode();
+			/* $this->session->data['error'] = $this->language->get('order_error') . ' ('. $this->language->get($decline) . ')'; */
+			$this->session->data['error'] = $this->language->get('Error'.$decline) . ' ('. $this->language->get($decline) . ')';
+			/* $this->language->get($decline); */
+		} else {
+			$this->session->data['error'] = $this->language->get('order_error');
+		}	
         $this->response->redirect($this->url->link('checkout/checkout'));
     }
 
@@ -374,13 +435,13 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
         /**
          * Add additional metadata to order history comment
          */
+		$extraData = $callbackResult->getextraData();
         $orderHistoryComments[] = 'Callback Result: ' . $callbackResult->getResult();
         $orderHistoryComments[] = 'TX Type: ' . $callbackResult->getTransactionType();
         $orderHistoryComments[] = 'CC Type: ' . $callbackResult->getReturnData()->toArray()['type'] ?? 'unknown';
         $orderHistoryComments[] = 'CC Digits: ' . $callbackResult->getReturnData()->toArray()['lastFourDigits'] ?? 'unknown';
-
+/* 		$orderHistoryComments[] = 'Auth Code: ' . isset($extraData['authCode']) ? $extraData['authCode'] : 'unknown'; */
         $this->updateOrderStatus($orderId, $orderStatus, $orderHistoryComments, $notifyCustomer);
-
         die("OK");
     }
 

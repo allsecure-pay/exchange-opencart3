@@ -3,9 +3,9 @@
 $_['text_extension'] = 'Extensions';
 
 // Admin Panel
-$_['heading_title'] = 'AllSecure Exchange Credit Card';
+$_['heading_title'] = 'AllSecure Exchange Platne kartice';
 $_['text_allsecure_exchange_creditcard'] = '<img src="./view/image/allsecure_exchange/creditcard.png" />';
-$_['error_mandatory_fields'] = 'Please fill in all mandatory fields.';
+$_['error_mandatory_fields'] = 'Molimo, unesite vrednosti u obavezna polja.';
 $_['text_edit'] = 'AllSecure Exchange Credit Card Payment';
 
 // Configuration
@@ -20,8 +20,6 @@ $_['config_sort_order_desc'] = 'Order of payment methods as displayed on payment
 
 $_['text_credentials'] = 'API Credentials';
 $_['config_api_host'] = 'Gateway Host';
-$_['config_api_host_test'] = 'Test Host';
-$_['config_api_host_live'] = 'Live Host';
 
 $_['config_cc_title'] = 'Title';
 $_['config_cc_title_desc'] = 'Title of payment method as displayed on the payment page.';

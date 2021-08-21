@@ -97,7 +97,7 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
             $this->mandatory_fields[] = 'cc_status_' . $creditCard['type'];
         }
         $data['credit_cards'] = $creditCards;
-
+		
 		$methods = $this->getMethods();
         $data['methods'] = [];
         foreach ($methods as $method) {

@@ -1,5 +1,12 @@
 # Release Notes
 
+## v1.5.0 (2021-08-21)
+### Added
+- Transaction data displayed when successfull payment
+- Message displayed when transaction declined
+- Serbian translation added
+- HPP language as per choosen language code
+
 ## v1.4.0 (2020-02-12)
 ### Added
 - Gateway callback validation
