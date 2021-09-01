@@ -326,6 +326,7 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
 				 * transaction data
 				 */
 				$data['transactionType'] = $statusResult -> getTransactionType();
+				$data['uuId'] = $statusResult -> getTransactionUuid();
 				$data['amount'] = $statusResult -> getAmount();
 				$data['currency'] = $statusResult -> getCurrency();
 				$cardData = $statusResult -> getreturnData();
@@ -440,6 +441,7 @@ final class ControllerExtensionPaymentAllsecureExchangeCreditCard extends Contro
         $orderHistoryComments[] = 'TX Type: ' . $callbackResult->getTransactionType();
         $orderHistoryComments[] = 'CC Type: ' . $callbackResult->getReturnData()->toArray()['type'] ?? 'unknown';
         $orderHistoryComments[] = 'CC Digits: ' . $callbackResult->getReturnData()->toArray()['lastFourDigits'] ?? 'unknown';
+		$orderHistoryComments[] = 'TX Id: ' . $callbackResult->getTransactionUuid();
 /* 		$orderHistoryComments[] = 'Auth Code: ' . isset($extraData['authCode']) ? $extraData['authCode'] : 'unknown'; */
         $this->updateOrderStatus($orderId, $orderStatus, $orderHistoryComments, $notifyCustomer);
         die("OK");

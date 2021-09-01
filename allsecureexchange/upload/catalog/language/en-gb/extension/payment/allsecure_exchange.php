@@ -20,6 +20,8 @@ $_['transaction_type'] = 'Transaction type';
 $_['transaction_payment_method'] = 'Payment method';
 $_['transaction_amount'] = 'Amount';
 $_['transaction_authcode'] = 'Authorization';
+$_['transaction_timestamp'] = 'Timestamp';
+$_['transaction_uuid'] = 'Order Id';
 
 /* Card decline messages */
 $_['Error1000'] = 'CONFIG ERROR. Some fundamental error in your request';

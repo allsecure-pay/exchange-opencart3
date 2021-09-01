@@ -14,12 +14,14 @@ $_['card_expiry_month'] = 'Mesec';
 $_['card_expiry_year'] = 'Godina';
 
 /* Payment Success Page */
-$_['payment_success_allsecure_exchange_heading_title'] = 'Vaša porudžbina je uspešna!';
+$_['payment_success_allsecure_exchange_heading_title'] = 'Porudžbina je uspešna! Račun platne kartice zadužen';
 $_['transaction_details'] = 'Detalji transakcije';
 $_['transaction_type'] = 'Tip transakcije';
 $_['transaction_payment_method'] = 'Metod plaćanja';
 $_['transaction_amount'] = 'Iznos';
 $_['transaction_authcode'] = 'Kod';
+$_['transaction_timestamp'] = 'Vreme';
+$_['transaction_uuid'] = 'Order Id';
 
 /* Card decline messages */
 $_['Error1000'] = 'CONFIG ERROR. Some fundamental error in your request';

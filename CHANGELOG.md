@@ -1,5 +1,9 @@
 # Release Notes
 
+## v1.5.1 (2021-09-01)
+### Added
+- Additional transaction data displayed when successfull payment
+
 ## v1.5.0 (2021-08-21)
 ### Added
 - Transaction data displayed when successfull payment
